@@ -7,9 +7,14 @@ import { Movimiento } from "./util/interfaces";
 import MesSelect from "./components/mes-select/MesSelect";
 import TablaMovimientos from "./components/tabla-movimientos/TablaMovimientos";
 import AgregarMovimientoModal from "./components/modals/agregar-movimiento/AgregarMovimiento";
+import { MovimientoService } from "./service/movimiento/MovimientoService";
 
 function App() {
-  const [movimientos, setMovimientos] = useState<Movimiento[]>([]);
+  const movimientoService = new MovimientoService();
+
+  const [movimientos, setMovimientos] = useState<Movimiento[]>(
+    movimientoService.getMovimientos()
+  );
   const [mostrarModalAgregarMovimiento, setMostrarModalAgregarMovimiento] =
     useState(false);
   const [tipoNuevoMovimiento, setTipoNuevoMovimiento] = useState("");
@@ -21,16 +26,19 @@ function App() {
     setTipoNuevoMovimiento(tipoNuevoMovimiento);
   };
 
-  const cerrarModalAgregarMovimiento = (movimiento: Movimiento) => {
+  const cerrarModalAgregarMovimiento = (
+    movimiento: Movimiento,
+    guardar: boolean = true
+  ) => {
     setMostrarModalAgregarMovimiento(false);
-    movimientos.push(movimiento);
-    setMovimientos(movimientos);
+    if (guardar) {
+      movimientos.push(movimiento);
+      setMovimientos(movimientos);
+      localStorage.setItem("movimientos", JSON.stringify(movimientos));
+    }
   };
 
-  movimientos.forEach((movimiento) => {
-    if (movimiento.tipo === "egreso") movimiento.monto *= -1;
-    total += movimiento.monto;
-  });
+  movimientos.forEach((movimiento) => (total += movimiento.monto));
 
   return (
     <main className="container">

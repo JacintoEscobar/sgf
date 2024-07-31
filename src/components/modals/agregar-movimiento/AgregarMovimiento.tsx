@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Modal, Button, Form } from "react-bootstrap";
 import { AgregarMovimientoProps, Movimiento } from "../../../util/interfaces";
-import { TiposMovimientos } from "../../../util/enums";
+import { MensajesError, TiposMovimientos } from "../../../util/enums";
+import { mostrarMensajeError } from "../../../util/functions";
 
 const AgregarMovimientoModal = ({
   mostrarModal,
@@ -12,24 +13,49 @@ const AgregarMovimientoModal = ({
     new Movimiento()
   );
 
-  const guardarNuevoMovimiento = () => {
-    nuevoMovimiento.tipo = tipoNuevoMovimiento;
-    cerrarModalAgregarMovimiento(nuevoMovimiento);
+  const validarNuevoMovimiento = () => {
+    return (
+      nuevoMovimiento.concepto !== "" &&
+      nuevoMovimiento.descripcion !== "" &&
+      nuevoMovimiento.fecha !== "" &&
+      nuevoMovimiento.monto !== 0
+    );
+  };
+
+  const guardarNuevoMovimiento = (guardar: boolean = true): void => {
+    if (guardar) {
+      if (!validarNuevoMovimiento()) {
+        return mostrarMensajeError(MensajesError.INFORMACION_INVALIDA);
+      }
+      nuevoMovimiento.tipo = tipoNuevoMovimiento;
+      nuevoMovimiento.tipo === TiposMovimientos.EGRESO
+        ? (nuevoMovimiento.monto *= -1)
+        : nuevoMovimiento.monto;
+      cerrarModalAgregarMovimiento(nuevoMovimiento);
+      return;
+    }
+    setNuevoMovimiento(new Movimiento());
+    cerrarModalAgregarMovimiento(nuevoMovimiento, guardar);
   };
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    const valor = Number.parseInt(value) && value;
+    const valor = name === "monto" ? Number.parseInt(value) : value;
     setNuevoMovimiento((nuevoMovimiento) => ({
       ...nuevoMovimiento,
       [name]: valor,
     }));
   };
 
+  useEffect(() => {
+    nuevoMovimiento.tipo = tipoNuevoMovimiento;
+    setNuevoMovimiento(nuevoMovimiento);
+  }, []);
+
   return (
     <Modal
       show={mostrarModal}
-      onHide={guardarNuevoMovimiento}
+      onHide={() => guardarNuevoMovimiento(false)}
       backdrop="static"
       keyboard={false}
     >
@@ -90,19 +116,20 @@ const AgregarMovimientoModal = ({
               disabled
               name="tipo"
               type="text"
-              defaultValue={tipoNuevoMovimiento
-                .toLowerCase()
-                .slice(0, tipoNuevoMovimiento.length - 1)}
+              defaultValue={tipoNuevoMovimiento.toLowerCase()}
               onChange={handleInputChange}
             />
           </Form.Group>
         </Form>
       </Modal.Body>
       <Modal.Footer>
-        <Button variant="secondary" onClick={guardarNuevoMovimiento}>
+        <Button
+          variant="secondary"
+          onClick={() => guardarNuevoMovimiento(false)}
+        >
           Cancelar
         </Button>
-        <Button variant="primary" onClick={guardarNuevoMovimiento}>
+        <Button variant="primary" onClick={() => guardarNuevoMovimiento()}>
           Guardar
         </Button>
       </Modal.Footer>

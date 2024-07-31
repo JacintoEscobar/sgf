@@ -6,7 +6,10 @@ export interface TablaMovimientosProps {
 
 export interface AgregarMovimientoProps {
   mostrarModal: boolean;
-  cerrarModalAgregarMovimiento: (movimiento: Movimiento) => void;
+  cerrarModalAgregarMovimiento: (
+    movimiento: Movimiento,
+    guardar?: boolean
+  ) => void;
   tipoNuevoMovimiento: string;
 }
 

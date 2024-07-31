@@ -66,7 +66,7 @@ const TablaMovimientos = ({
                 <td>{movimiento.concepto}</td>
                 <td>{movimiento.descripcion}</td>
                 <td>{movimiento.fecha}</td>
-                <td>{movimiento.monto}</td>
+                <td>${movimiento.monto}</td>
                 <td>
                   <button className="btn">
                     <svg
