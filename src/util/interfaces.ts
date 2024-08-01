@@ -3,6 +3,7 @@ export interface TablaMovimientosProps {
   movimientos: Movimiento[];
   abrirModalAgregarMovimiento: (tipoNuevoMovimiento: string) => void;
   eliminarMovimiento: (id: string) => void;
+  abrirModalEditarMovimiento: (movimiento: Movimiento) => void;
 }
 
 export interface AgregarMovimientoProps {
@@ -12,6 +13,12 @@ export interface AgregarMovimientoProps {
     guardar?: boolean
   ) => void;
   tipoNuevoMovimiento: string;
+}
+
+export interface EditarMovimientoProps {
+  mostrarModal: boolean;
+  cerrarModalEditarMovimiento: (guardar?: boolean) => void;
+  movimientoEditar: Movimiento;
 }
 
 interface MovimientoI {

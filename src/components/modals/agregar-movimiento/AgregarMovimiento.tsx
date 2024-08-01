@@ -106,6 +106,7 @@ const AgregarMovimientoModal = ({
               name="monto"
               type="number"
               step={1}
+              min={1}
               datatype="currency"
               placeholder="$100.00"
               onInput={handleInputChange}

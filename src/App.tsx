@@ -12,6 +12,7 @@ import MesSelect from "./components/mes-select/MesSelect";
 import TablaMovimientos from "./components/tabla-movimientos/TablaMovimientos";
 import AgregarMovimientoModal from "./components/modals/agregar-movimiento/AgregarMovimiento";
 import { MovimientoService } from "./service/movimiento/MovimientoService";
+import EditarMovimiento from "./components/modals/editar-movimiento/EditarMovimiento";
 
 function App() {
   const movimientoService = new MovimientoService();
@@ -22,6 +23,9 @@ function App() {
   const [mostrarModalAgregarMovimiento, setMostrarModalAgregarMovimiento] =
     useState(false);
   const [tipoNuevoMovimiento, setTipoNuevoMovimiento] = useState("");
+  const [mostrarModalEditarMovimiento, setMostrarModalEditarMovimiento] =
+    useState(false);
+  const [movimientoEditar, setMovimientoEditar] = useState<Movimiento>();
 
   let total = 0;
 
@@ -57,6 +61,17 @@ function App() {
     );
   };
 
+  const abrirModalEditarMovimiento = (movimiento: Movimiento) => {
+    setMostrarModalEditarMovimiento(true);
+    setMovimientoEditar(movimiento);
+  };
+
+  const cerrarModalEditarMovimiento = (guardar: boolean = true) => {
+    setMostrarModalEditarMovimiento(false);
+    if (guardar)
+      localStorage.setItem("movimientos", JSON.stringify(movimientos));
+  };
+
   return (
     <main className="container">
       <MesSelect />
@@ -68,6 +83,7 @@ function App() {
         )}
         abrirModalAgregarMovimiento={abrirModalAgregarMovimiento}
         eliminarMovimiento={eliminarMovimiento}
+        abrirModalEditarMovimiento={abrirModalEditarMovimiento}
       />
 
       <TablaMovimientos
@@ -77,6 +93,7 @@ function App() {
         )}
         abrirModalAgregarMovimiento={abrirModalAgregarMovimiento}
         eliminarMovimiento={eliminarMovimiento}
+        abrirModalEditarMovimiento={abrirModalEditarMovimiento}
       />
 
       <div>
@@ -88,11 +105,21 @@ function App() {
         </span>
       </div>
 
-      <AgregarMovimientoModal
-        mostrarModal={mostrarModalAgregarMovimiento}
-        cerrarModalAgregarMovimiento={cerrarModalAgregarMovimiento}
-        tipoNuevoMovimiento={tipoNuevoMovimiento}
-      />
+      {mostrarModalAgregarMovimiento && (
+        <AgregarMovimientoModal
+          mostrarModal={mostrarModalAgregarMovimiento}
+          cerrarModalAgregarMovimiento={cerrarModalAgregarMovimiento}
+          tipoNuevoMovimiento={tipoNuevoMovimiento}
+        />
+      )}
+
+      {mostrarModalEditarMovimiento && (
+        <EditarMovimiento
+          mostrarModal={mostrarModalEditarMovimiento}
+          cerrarModalEditarMovimiento={cerrarModalEditarMovimiento}
+          movimientoEditar={movimientoEditar as Movimiento}
+        />
+      )}
     </main>
   );
 }
