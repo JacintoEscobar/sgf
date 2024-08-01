@@ -1,6 +1,6 @@
 import "./App.css";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   MensajesAdvertencia,
   TextosPredeterminados,
@@ -26,6 +26,7 @@ function App() {
   const [mostrarModalEditarMovimiento, setMostrarModalEditarMovimiento] =
     useState(false);
   const [movimientoEditar, setMovimientoEditar] = useState<Movimiento>();
+  const [controlMes, setControlMes] = useState(0);
 
   let total = 0;
 
@@ -46,7 +47,10 @@ function App() {
     }
   };
 
-  movimientos.forEach((movimiento) => (total += movimiento.monto));
+  movimientos.forEach((movimiento) => {
+    if (Number.parseInt(movimiento.fecha.split("-")[1]) === controlMes)
+      total += movimiento.monto;
+  });
 
   const eliminarMovimiento = (id: string) => {
     mostrarMensajeAdvertencia(MensajesAdvertencia.CONFIRMAR_ELIMINACION).then(
@@ -74,12 +78,14 @@ function App() {
 
   return (
     <main className="container">
-      <MesSelect />
+      <MesSelect setControlMes={setControlMes} />
 
       <TablaMovimientos
         titulo={TiposMovimientos.INGRESO}
         movimientos={movimientos.filter(
-          (movimiento) => movimiento.tipo === TiposMovimientos.INGRESO
+          (movimiento) =>
+            movimiento.tipo === TiposMovimientos.INGRESO &&
+            Number.parseInt(movimiento.fecha.split("-")[1]) === controlMes
         )}
         abrirModalAgregarMovimiento={abrirModalAgregarMovimiento}
         eliminarMovimiento={eliminarMovimiento}
@@ -89,7 +95,9 @@ function App() {
       <TablaMovimientos
         titulo={TiposMovimientos.EGRESO}
         movimientos={movimientos.filter(
-          (movimiento) => movimiento.tipo === TiposMovimientos.EGRESO
+          (movimiento) =>
+            movimiento.tipo === TiposMovimientos.EGRESO &&
+            Number.parseInt(movimiento.fecha.split("-")[1]) === controlMes
         )}
         abrirModalAgregarMovimiento={abrirModalAgregarMovimiento}
         eliminarMovimiento={eliminarMovimiento}
@@ -99,7 +107,7 @@ function App() {
       <div>
         <span className="balance">Balance: </span>
         <span className="balance">
-          {movimientos.length === 0
+          {movimientos.length === 0 || controlMes === 0
             ? TextosPredeterminados.NA
             : formatCurrency(total)}
         </span>

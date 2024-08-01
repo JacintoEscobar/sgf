@@ -21,6 +21,10 @@ export interface EditarMovimientoProps {
   movimientoEditar: Movimiento;
 }
 
+export interface MesSelectProps {
+  setControlMes: React.Dispatch<React.SetStateAction<number>>;
+}
+
 interface MovimientoI {
   id: string;
   concepto: string;

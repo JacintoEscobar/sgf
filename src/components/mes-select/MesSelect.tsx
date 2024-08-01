@@ -1,6 +1,7 @@
+import { MesSelectProps } from "../../util/interfaces";
 import "./mes-select.css";
 
-const MesSelect = () => {
+const MesSelect = ({ setControlMes }: MesSelectProps) => {
   const meses = [
     "ENERO",
     "FEBRERO",
@@ -16,13 +17,21 @@ const MesSelect = () => {
     "DICIEMBRE",
   ];
 
+  const controlarMes = (event: React.ChangeEvent<HTMLSelectElement>) =>
+    setControlMes(Number.parseInt(event.target.value));
+
   return (
-    <select title="mes-select" className="form-select" defaultValue="">
+    <select
+      title="mes-select"
+      className="form-select"
+      defaultValue=""
+      onChange={controlarMes}
+    >
       <option key={0} value="">
         -- SELECCIONAR --
       </option>
       {meses.map((mes: string, index: number) => (
-        <option key={index} value={mes}>
+        <option key={index} value={index + 1}>
           {mes}
         </option>
       ))}
