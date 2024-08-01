@@ -3,6 +3,7 @@ import { Modal, Button, Form } from "react-bootstrap";
 import { AgregarMovimientoProps, Movimiento } from "../../../util/interfaces";
 import { MensajesError, TiposMovimientos } from "../../../util/enums";
 import { mostrarMensajeError } from "../../../util/functions";
+import { v4 as uuidv4 } from "uuid";
 
 const AgregarMovimientoModal = ({
   mostrarModal,
@@ -27,6 +28,7 @@ const AgregarMovimientoModal = ({
       if (!validarNuevoMovimiento()) {
         return mostrarMensajeError(MensajesError.INFORMACION_INVALIDA);
       }
+      nuevoMovimiento.id = uuidv4();
       nuevoMovimiento.tipo = tipoNuevoMovimiento;
       nuevoMovimiento.tipo === TiposMovimientos.EGRESO
         ? (nuevoMovimiento.monto *= -1)

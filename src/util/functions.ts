@@ -12,3 +12,33 @@ export const mostrarMensajeError = (mensaje: string) => {
     confirmButtonText: "Volver",
   });
 };
+
+export const mostrarMensajeExito = (mensaje: string) => {
+  Swal.fire({
+    title: "¡Hecho!",
+    text: mensaje,
+    icon: "success",
+    showConfirmButton: false,
+    timer: 1800,
+  });
+};
+
+export const mostrarMensajeAdvertencia = async (
+  mensaje: string
+): Promise<boolean | void> => {
+  return await Swal.fire({
+    title: "Advertencia!",
+    text: mensaje,
+    icon: "warning",
+    confirmButtonText: "Continuar",
+    showCancelButton: true,
+    cancelButtonText: "Cancelar",
+  })
+    .then((result) => {
+      return result.isConfirmed;
+    })
+    .catch((error) => {
+      console.error(error);
+      return false;
+    });
+};

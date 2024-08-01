@@ -2,6 +2,7 @@ export interface TablaMovimientosProps {
   titulo: string;
   movimientos: Movimiento[];
   abrirModalAgregarMovimiento: (tipoNuevoMovimiento: string) => void;
+  eliminarMovimiento: (id: string) => void;
 }
 
 export interface AgregarMovimientoProps {

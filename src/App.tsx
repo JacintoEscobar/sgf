@@ -1,8 +1,12 @@
 import "./App.css";
 
 import { useState } from "react";
-import { TextosPredeterminados, TiposMovimientos } from "./util/enums";
-import { formatCurrency } from "./util/functions";
+import {
+  MensajesAdvertencia,
+  TextosPredeterminados,
+  TiposMovimientos,
+} from "./util/enums";
+import { formatCurrency, mostrarMensajeAdvertencia } from "./util/functions";
 import { Movimiento } from "./util/interfaces";
 import MesSelect from "./components/mes-select/MesSelect";
 import TablaMovimientos from "./components/tabla-movimientos/TablaMovimientos";
@@ -40,6 +44,19 @@ function App() {
 
   movimientos.forEach((movimiento) => (total += movimiento.monto));
 
+  const eliminarMovimiento = (id: string) => {
+    mostrarMensajeAdvertencia(MensajesAdvertencia.CONFIRMAR_ELIMINACION).then(
+      (result) => {
+        if (result) {
+          movimientoService.deleteMovimiento(id);
+          setMovimientos(
+            JSON.parse(localStorage.getItem("movimientos") || "[]")
+          );
+        }
+      }
+    );
+  };
+
   return (
     <main className="container">
       <MesSelect />
@@ -50,6 +67,7 @@ function App() {
           (movimiento) => movimiento.tipo === TiposMovimientos.INGRESO
         )}
         abrirModalAgregarMovimiento={abrirModalAgregarMovimiento}
+        eliminarMovimiento={eliminarMovimiento}
       />
 
       <TablaMovimientos
@@ -58,6 +76,7 @@ function App() {
           (movimiento) => movimiento.tipo === TiposMovimientos.EGRESO
         )}
         abrirModalAgregarMovimiento={abrirModalAgregarMovimiento}
+        eliminarMovimiento={eliminarMovimiento}
       />
 
       <div>
