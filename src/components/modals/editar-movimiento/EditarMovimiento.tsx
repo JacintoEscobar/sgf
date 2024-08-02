@@ -3,6 +3,11 @@ import { EditarMovimientoProps, Movimiento } from "../../../util/interfaces";
 import { MensajesError, TiposMovimientos } from "../../../util/enums";
 import { mostrarMensajeError } from "../../../util/functions";
 import { useEffect, useState } from "react";
+import {
+  conceptoOtro,
+  conceptosEgresos,
+  conceptosIngresos,
+} from "../../../util/constant";
 
 const EditarMovimiento = ({
   mostrarModal,
@@ -20,6 +25,14 @@ const EditarMovimiento = ({
         movimientoEditar.tipo
       )
     );
+
+  const [controlConcepto, setControlConcepto] = useState(
+    conceptosIngresos.includes(movimientoEditar.concepto) ||
+      conceptosEgresos.includes(movimientoEditar.concepto)
+      ? movimientoEditar.concepto
+      : conceptoOtro
+  );
+
   const validarMovimientoEditar = () => {
     return (
       movimientoEditarTemporal.concepto !== "" &&
@@ -62,6 +75,16 @@ const EditarMovimiento = ({
     setMovimientoEditarTemporal(movimientoEditarTemporal);
   };
 
+  const controlarConcepto = (event: React.ChangeEvent<HTMLSelectElement>) =>
+    setControlConcepto(event.target.value);
+
+  useEffect(() => {
+    controlConcepto === conceptoOtro
+      ? (movimientoEditarTemporal.concepto = movimientoEditar.concepto)
+      : (movimientoEditarTemporal.concepto = controlConcepto);
+    setMovimientoEditarTemporal(movimientoEditarTemporal);
+  }, [controlConcepto]);
+
   useEffect(() => {
     if (movimientoEditarTemporal.tipo === TiposMovimientos.EGRESO) {
       movimientoEditarTemporal.monto *= -1;
@@ -94,13 +117,33 @@ const EditarMovimiento = ({
 
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Concepto</Form.Label>
-            <Form.Control
+            <Form.Select
               name="concepto"
-              type="text"
-              placeholder="Pago del alquiler"
-              onInput={handleInputChange}
-              defaultValue={movimientoEditarTemporal.concepto}
-            />
+              onChange={controlarConcepto}
+              defaultValue={controlConcepto}
+            >
+              {movimientoEditarTemporal.tipo === TiposMovimientos.INGRESO
+                ? conceptosIngresos.map((concepto) => (
+                    <option key={concepto} value={concepto}>
+                      {concepto}
+                    </option>
+                  ))
+                : conceptosEgresos.map((concepto) => (
+                    <option key={concepto} value={concepto}>
+                      {concepto}
+                    </option>
+                  ))}
+            </Form.Select>
+            {controlConcepto === conceptoOtro && (
+              <Form.Control
+                className="concepto-otro"
+                name="concepto"
+                type="text"
+                placeholder="Pago del alquiler"
+                onInput={handleInputChange}
+                defaultValue={movimientoEditar.concepto}
+              />
+            )}
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="formBasicPassword">

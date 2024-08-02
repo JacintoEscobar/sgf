@@ -55,7 +55,6 @@ const AgregarMovimientoModal = ({
       ...nuevoMovimiento,
       [name]: valor,
     }));
-    console.log(nuevoMovimiento);
   };
 
   const controlarConcepto = (event: React.ChangeEvent<HTMLSelectElement>) =>
@@ -65,14 +64,11 @@ const AgregarMovimientoModal = ({
     if (controlConcepto !== conceptoOtro) {
       nuevoMovimiento.concepto = controlConcepto;
       setNuevoMovimiento(nuevoMovimiento);
-      console.log(nuevoMovimiento);
     }
   }, [controlConcepto]);
 
   useEffect(() => {
     nuevoMovimiento.tipo = tipoNuevoMovimiento;
-    setNuevoMovimiento(nuevoMovimiento);
-
     nuevoMovimiento.concepto =
       tipoNuevoMovimiento === TiposMovimientos.INGRESO
         ? conceptosIngresos[0]
