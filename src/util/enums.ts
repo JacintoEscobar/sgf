@@ -13,6 +13,8 @@ export enum MensajesError {
 
 export enum MensajesExito {
   ELIMINACION_EXITOSA = "Eliminación exitosa",
+  CREACION_EXITOSA = "Creación exitosa",
+  EDICION_EXITOSA = "Edición exitosa",
 }
 
 export enum MensajesAdvertencia {

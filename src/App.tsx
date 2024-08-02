@@ -3,10 +3,16 @@ import "./App.css";
 import { useState } from "react";
 import {
   MensajesAdvertencia,
+  MensajesExito,
   TextosPredeterminados,
+  TiemposPredeterminados,
   TiposMovimientos,
 } from "./util/enums";
-import { formatCurrency, mostrarMensajeAdvertencia } from "./util/functions";
+import {
+  formatCurrency,
+  mostrarMensajeAdvertencia,
+  mostrarMensajeExito,
+} from "./util/functions";
 import { Movimiento } from "./util/interfaces";
 import MesSelect from "./components/mes-select/MesSelect";
 import TablaMovimientos from "./components/tabla-movimientos/TablaMovimientos";
@@ -41,6 +47,10 @@ function App() {
   ) => {
     setMostrarModalAgregarMovimiento(false);
     if (guardar) {
+      setTimeout(
+        () => mostrarMensajeExito(MensajesExito.CREACION_EXITOSA),
+        TiemposPredeterminados.CUARTO_DE_SEGUNDO
+      );
       movimientos.push(movimiento);
       setMovimientos(movimientos);
       localStorage.setItem("movimientos", JSON.stringify(movimientos));
@@ -72,8 +82,13 @@ function App() {
 
   const cerrarModalEditarMovimiento = (guardar: boolean = true) => {
     setMostrarModalEditarMovimiento(false);
-    if (guardar)
+    if (guardar) {
+      setTimeout(
+        () => mostrarMensajeExito(MensajesExito.EDICION_EXITOSA),
+        TiemposPredeterminados.CUARTO_DE_SEGUNDO
+      );
       localStorage.setItem("movimientos", JSON.stringify(movimientos));
+    }
   };
 
   return (
