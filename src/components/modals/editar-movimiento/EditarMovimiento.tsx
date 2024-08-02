@@ -2,7 +2,7 @@ import { Modal, Button, Form } from "react-bootstrap";
 import { EditarMovimientoProps, Movimiento } from "../../../util/interfaces";
 import { MensajesError, TiposMovimientos } from "../../../util/enums";
 import { mostrarMensajeError } from "../../../util/functions";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 const EditarMovimiento = ({
   mostrarModal,
@@ -13,7 +13,7 @@ const EditarMovimiento = ({
     useState<Movimiento>(
       new Movimiento(
         movimientoEditar.id,
-        movimientoEditar.descripcion,
+        movimientoEditar.concepto,
         movimientoEditar.descripcion,
         movimientoEditar.fecha,
         movimientoEditar.monto,
@@ -62,6 +62,13 @@ const EditarMovimiento = ({
     setMovimientoEditarTemporal(movimientoEditarTemporal);
   };
 
+  useEffect(() => {
+    if (movimientoEditarTemporal.tipo === TiposMovimientos.EGRESO) {
+      movimientoEditarTemporal.monto *= -1;
+      setMovimientoEditarTemporal(movimientoEditarTemporal);
+    }
+  }, []);
+
   return (
     <Modal
       show={mostrarModal}
@@ -70,7 +77,7 @@ const EditarMovimiento = ({
       keyboard={false}
     >
       <Modal.Header closeButton>
-        <Modal.Title>Editar {movimientoEditar.tipo}</Modal.Title>
+        <Modal.Title>Editar {movimientoEditarTemporal.tipo}</Modal.Title>
       </Modal.Header>
       <Modal.Body>
         <Form id="agregar-movimiento-form">
@@ -79,7 +86,7 @@ const EditarMovimiento = ({
             <Form.Control
               name="id"
               type="text"
-              value={movimientoEditar.id}
+              value={movimientoEditarTemporal.id}
               disabled
               readOnly
             />
@@ -92,7 +99,7 @@ const EditarMovimiento = ({
               type="text"
               placeholder="Pago del alquiler"
               onInput={handleInputChange}
-              defaultValue={movimientoEditar.concepto}
+              defaultValue={movimientoEditarTemporal.concepto}
             />
           </Form.Group>
 
@@ -103,7 +110,7 @@ const EditarMovimiento = ({
               type="text"
               placeholder="Pago del alquiler del mes de febrero"
               onInput={handleInputChange}
-              defaultValue={movimientoEditar.descripcion}
+              defaultValue={movimientoEditarTemporal.descripcion}
             />
           </Form.Group>
 
@@ -113,7 +120,7 @@ const EditarMovimiento = ({
               name="fecha"
               type="date"
               onChange={handleInputChange}
-              defaultValue={movimientoEditar.fecha}
+              defaultValue={movimientoEditarTemporal.fecha}
             />
           </Form.Group>
 
@@ -128,9 +135,9 @@ const EditarMovimiento = ({
               placeholder="$100.00"
               onInput={handleInputChange}
               defaultValue={
-                movimientoEditar.tipo === TiposMovimientos.EGRESO
-                  ? movimientoEditar.monto * -1
-                  : movimientoEditar.monto
+                movimientoEditarTemporal.tipo === TiposMovimientos.EGRESO
+                  ? movimientoEditarTemporal.monto * -1
+                  : movimientoEditarTemporal.monto
               }
             />
           </Form.Group>
@@ -141,7 +148,7 @@ const EditarMovimiento = ({
               disabled
               name="tipo"
               type="text"
-              value={movimientoEditar.tipo}
+              value={movimientoEditarTemporal.tipo}
               onChange={handleInputChange}
             />
           </Form.Group>
