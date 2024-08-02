@@ -4,6 +4,12 @@ import { AgregarMovimientoProps, Movimiento } from "../../../util/interfaces";
 import { MensajesError, TiposMovimientos } from "../../../util/enums";
 import { mostrarMensajeError } from "../../../util/functions";
 import { v4 as uuidv4 } from "uuid";
+import {
+  conceptoOtro,
+  conceptosEgresos,
+  conceptosIngresos,
+} from "../../../util/constant";
+import "./agregar-movimiento.css";
 
 const AgregarMovimientoModal = ({
   mostrarModal,
@@ -13,6 +19,8 @@ const AgregarMovimientoModal = ({
   const [nuevoMovimiento, setNuevoMovimiento] = useState<Movimiento>(
     new Movimiento()
   );
+
+  const [controlConcepto, setControlConcepto] = useState("");
 
   const validarNuevoMovimiento = () => {
     return (
@@ -47,10 +55,28 @@ const AgregarMovimientoModal = ({
       ...nuevoMovimiento,
       [name]: valor,
     }));
+    console.log(nuevoMovimiento);
   };
+
+  const controlarConcepto = (event: React.ChangeEvent<HTMLSelectElement>) =>
+    setControlConcepto(event.target.value);
+
+  useEffect(() => {
+    if (controlConcepto !== conceptoOtro) {
+      nuevoMovimiento.concepto = controlConcepto;
+      setNuevoMovimiento(nuevoMovimiento);
+      console.log(nuevoMovimiento);
+    }
+  }, [controlConcepto]);
 
   useEffect(() => {
     nuevoMovimiento.tipo = tipoNuevoMovimiento;
+    setNuevoMovimiento(nuevoMovimiento);
+
+    nuevoMovimiento.concepto =
+      tipoNuevoMovimiento === TiposMovimientos.INGRESO
+        ? conceptosIngresos[0]
+        : conceptosEgresos[0];
     setNuevoMovimiento(nuevoMovimiento);
   }, []);
 
@@ -73,12 +99,28 @@ const AgregarMovimientoModal = ({
         <Form id="agregar-movimiento-form">
           <Form.Group className="mb-3" controlId="formBasicEmail">
             <Form.Label>Concepto</Form.Label>
-            <Form.Control
-              name="concepto"
-              type="text"
-              placeholder="Pago del alquiler"
-              onInput={handleInputChange}
-            />
+            <Form.Select name="concepto" onChange={controlarConcepto}>
+              {tipoNuevoMovimiento === TiposMovimientos.INGRESO
+                ? conceptosIngresos.map((concepto) => (
+                    <option key={concepto} value={concepto}>
+                      {concepto}
+                    </option>
+                  ))
+                : conceptosEgresos.map((concepto) => (
+                    <option key={concepto} value={concepto}>
+                      {concepto}
+                    </option>
+                  ))}
+            </Form.Select>
+            {controlConcepto === conceptoOtro && (
+              <Form.Control
+                className="concepto-otro"
+                name="concepto"
+                type="text"
+                placeholder="Pago del alquiler"
+                onInput={handleInputChange}
+              />
+            )}
           </Form.Group>
 
           <Form.Group className="mb-3" controlId="formBasicPassword">
