@@ -26,7 +26,7 @@ function App() {
   const [mostrarModalEditarMovimiento, setMostrarModalEditarMovimiento] =
     useState(false);
   const [movimientoEditar, setMovimientoEditar] = useState<Movimiento>();
-  const [controlMes, setControlMes] = useState(0);
+  const [controlMes, setControlMes] = useState(new Date().getMonth() + 1);
 
   let total = 0;
 

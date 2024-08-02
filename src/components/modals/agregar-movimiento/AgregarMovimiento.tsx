@@ -42,7 +42,7 @@ const AgregarMovimientoModal = ({
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = event.target;
-    const valor = name === "monto" ? Number.parseInt(value) : value;
+    const valor = name === "monto" ? Number.parseFloat(value) : value;
     setNuevoMovimiento((nuevoMovimiento) => ({
       ...nuevoMovimiento,
       [name]: valor,

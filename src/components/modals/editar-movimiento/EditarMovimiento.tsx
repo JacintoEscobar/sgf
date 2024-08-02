@@ -58,7 +58,7 @@ const EditarMovimiento = ({
       : event.target.name === "fecha"
       ? (movimientoEditarTemporal.fecha = event.target.value)
       : (movimientoEditarTemporal.monto =
-          Number.parseInt(event.target.value) || 0);
+          Number.parseFloat(event.target.value) || 0);
     setMovimientoEditarTemporal(movimientoEditarTemporal);
   };
 

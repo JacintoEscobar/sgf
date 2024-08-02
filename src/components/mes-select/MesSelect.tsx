@@ -24,12 +24,9 @@ const MesSelect = ({ setControlMes }: MesSelectProps) => {
     <select
       title="mes-select"
       className="form-select"
-      defaultValue=""
+      defaultValue={new Date().getMonth() + 1}
       onChange={controlarMes}
     >
-      <option key={0} value="">
-        -- SELECCIONAR --
-      </option>
       {meses.map((mes: string, index: number) => (
         <option key={index} value={index + 1}>
           {mes}
